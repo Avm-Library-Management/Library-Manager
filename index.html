@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Book Search App with Article Section</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #86c8e0;
+            color: #a70f0f;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Rainbow background animation */
+        @keyframes rainbow {
+            0% { background-color: red; }
+            14% { background-color: orange; }
+            28% { background-color: yellow; }
+            42% { background-color: green; }
+            57% { background-color: blue; }
+            71% { background-color: indigo; }
+            85% { background-color: violet; }
+            100% { background-color: red; }
+        }
+
+        .rainbow-background {
+            animation: rainbow 5s linear infinite;
+        }
+
+        .nyan-cat {
+            position: fixed;
+            top: 50%;
+            left: -200px;
+            width: 100px;
+            animation: moveNyan 5s linear infinite;
+        }
+
+        @keyframes moveNyan {
+            0% { left: -200px; }
+            100% { left: 100%; }
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 10px 0;
+        }
+        
+        .logo-part {
+            height: 90px;
+            object-fit: contain;
+        }
+        
+        .title {
+            font-size: 2.5em;
+            text-align: center;
+            font-weight: bold;
+            color: black;
+            margin-bottom: 40px;
+        }
+
+        .preferences {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .preferences label {
+            font-size: 1.2em;
+            color: #000000;
+        }
+
+        .preferences select,
+        .preferences input {
+            padding: 10px;
+            font-size: 1em;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #80DEEA;
+            background-color: #007ba0;
+            color: #F1F1F1;
+        }
+
+        .preferences select:focus,
+        .preferences input:focus {
+            outline: none;
+            border-color: #00B5E2;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            border: 1px solid #80DEEA;
+            background-color: #007ba0;
+            color: #F1F1F1;
+        }
+
+        .book-list {
+            margin-top: 40px;
+        }
+
+        .book-item {
+            display: flex;
+            align-items: center;
+            background-color: #003B5C;
+            padding: 20px;
+            margin-bottom: 20px;            
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .book-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .book-item img {
+            width: 100px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+
+        .book-item .details {
+            flex: 1;
+        }
+
+        .book-item .details h3 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #80DEEA;
+        }
+
+        .book-item .details p {
+            margin: 5px 0;
+            color: #F1F1F1;
+        }
+
+        .action-button {
+            margin-top: 40px;
+            padding: 12px 24px;
+            background-color: #007ba0;
+            color: #f1f1f1;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: block;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .action-button:hover {
+            background-color: #00b5e2;
+        }
+
+        /* Hide and show views */
+        #article-page {
+            display: none;
+            width: 80%;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f1f1f1;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #202020;
+            line-height: 1.6;
+        }
+
+        #article-page h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #007ba0;
+        }
+
+        #article-page p {
+            margin-bottom: 1rem;
+            font-size: 1.15rem;
+        }
+
+        #article-page .back-button {
+            background-color: #007ba0;
+            color: #f1f1f1;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 40px auto 0 auto;
+            width: fit-content;
+            font-weight: 700;
+            transition: background-color 0.2s ease;
+        }
+
+        #article-page .back-button:hover {
+            background-color: #00b5e2;
+        }
+    </style>
+</head>
+<body>
+    <!-- Book Search Application View -->
+    <div id="book-app" class="container" role="main" aria-label="Book Search Application">
+        <div class="header" role="banner">
+            <!-- Left part of the logo -->
+            <img src="logo.png" alt="AVM Logo Left" class="logo-part logo-left">
+            
+            <!-- Center text part -->
+            <img src="text.png" alt="AVM Text" class="logo-part logo-center">
+            
+            <!-- Right anniversary part -->
+            <img src="50years.png" alt="AVM 50 Years" class="logo-part logo-right">
+        </div>
+        <h1 class="title">Book Search App</h1>
+
+        <input type="text" id="search-bar" class="search-bar" placeholder="Search for books..." onkeyup="searchBooks()" aria-label="Search for books" />
+
+        <div class="preferences">
+            <label for="author">Author:</label>
+            <select id="author" onchange="filterBooks()" aria-label="Filter by author">
+                <option value="">All Authors</option>
+                <option value="J.K. Rowling">J.K. Rowling</option>
+                <option value="Tui T. Sutherland">Tui T. Sutherland</option>
+                <option value="Rick Riordan">Rick Riordan</option>
+                <option value="Roald Dahl">Roald Dahl</option>
+                <option value="Enid Blyton">Enid Blyton</option>
+                <option value="J.R.R. Tolkien">J.R.R. Tolkien</option>
+                <option value="C.S. Lewis">C.S. Lewis</option>
+                <option value="Frances Hodgson Burnett">Frances Hodgson Burnett</option>
+                <option value="Antoine de Saint-Exupéry">Antoine de Saint-Exupéry</option>
+                <option value="F. Scott Fitzgerald">F. Scott Fitzgerald</option>
+                <option value="George Orwell">George Orwell</option>
+                <option value="Harper Lee">Harper Lee</option>
+                <option value="John Green">John Green</option>
+                <option value="James Dashner">James Dashner</option>
+            </select>
+
+            <label for="series">Series:</label>
+            <select id="series" onchange="filterBooks()" aria-label="Filter by series">
+                <option value="">All Series</option>
+                <option value="Harry Potter">Harry Potter</option>
+                <option value="Wings of Fire">Wings of Fire</option>
+                <option value="Percy Jackson">Percy Jackson</option>
+                <option value="The Famous Five">The Famous Five</option>
+                <option value="The Lord of the Rings">The Lord of the Rings</option>
+                <option value="The Chronicles of Narnia">The Chronicles of Narnia</option>
+                <option value="The Maze Runner">The Maze Runner</option>
+            </select>
+
+            <label for="genre">Genre:</label>
+            <select id="genre" onchange="filterBooks()" aria-label="Filter by genre">
+                <option value="">All Genres</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Mystery">Mystery</option>
+                <option value="Action">Action</option>
+                <option value="Classic">Classic</option>
+                <option value="Dystopian">Dystopian</option>
+                <option value="Children's">Children's</option>
+                <option value="Young Adult">Young Adult</option>
+            </select>
+        </div>
+
+        <div class="book-list" id="book-list">
+            <!-- Dynamically generated list of books will appear here -->
+        </div>
+        <button class="action-button" onclick="goToArticlePage()">Go to Article Section</button>
+    </div>
+
+    <!-- Nyan Cat Image -->
+    <img id="nyan-cat" class="nyan-cat" src="https://clipart-library.com/image_gallery2/Nyan-Cat-PNG.png" alt="Nyan Cat" style="display: none;" />
+
+    <!-- Article Page View -->
+    <div id="article-page">
+        <h2>Article on Literature</h2>
+        <p>Literature plays a vital role in our lives. It helps us understand various cultures, ideas, and societies. Through literature, we experience stories of love, loss, and human connection that teach us empathy, morality, and wisdom. It opens doors to new worlds, igniting creativity and innovation. Below is an article on the impact of literature:</p>
+        <p>Some powerful literature works include classic novels like "To Kill a Mockingbird," "1984," and "Pride and Prejudice," as well as modern-day epics like "Harry Potter" and "Percy Jackson."</p>
+        <button class="back-button" onclick="goBack()">Back to Search</button>
+    </div>
+
+    <script>
+        const books = [
+            {
+                title: "Harry Potter and the Sorcerer's Stone",
+                author: "J.K. Rowling",
+                series: "Harry Potter",
+                genre: "Fantasy",
+                image: "https://images.penguinrandomhouse.com/cover/9780590353427",
+            },
+            {
+                title: "Wings of Fire",
+                author: "Tui T. Sutherland",
+                series: "Wings of Fire",
+                genre: "Fantasy",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkkdLWyLTo6nh3HwO72bSZKldvCqvYSLx21A&s",
+            },
+            {
+                title: "Percy Jackson and the Olympians",
+                author: "Rick Riordan",
+                series: "Percy Jackson",
+                genre: "Adventure",
+                image: "https://images.penguinrandomhouse.com/cover/9780786838653",
+            },
+            {
+                title: "The Famous Five",
+                author: "Enid Blyton",
+                series: "The Famous Five",
+                genre: "Mystery",
+                image: "https://upload.wikimedia.org/wikipedia/en/e/ed/FiveOnATreasureIsland.jpg",
+            },
+            {
+                title: "Charlie and the Chocolate Factory",
+                author: "Roald Dahl",
+                series: "None",
+                genre: "Adventure",
+                image: "https://res.cloudinary.com/dhsjpmqz9/f_auto,q_auto,w_700,c_fill,g_auto/ROALD_DAHL_CHARLIE_AND_THE_CHOCOLATE_FACTORY-QUENTIN_BLAKE_pjfsnt",
+            },
+            {
+                title: "The Hobbit",
+                author: "J.R.R. Tolkien",
+                series: "The Lord of the Rings",
+                genre: "Fantasy",
+                image: "https://images.penguinrandomhouse.com/cover/9780547928227",
+            },
+            {
+                title: "The Chronicles of Narnia",
+                author: "C.S. Lewis",
+                series: "The Chronicles of Narnia",
+                genre: "Fantasy",
+                image: "https://images.penguinrandomhouse.com/cover/9780066238500",
+            },
+            {
+                title: "The Secret Garden",
+                author: "Frances Hodgson Burnett",
+                series: "None",
+                genre: "Classic",
+                image: "https://images.penguinrandomhouse.com/cover/9781501131622",
+            },
+            {
+                title: "The Little Prince",
+                author: "Antoine de Saint-Exupéry",
+                series: "None",
+                genre: "Fantasy",
+                image: "https://images.penguinrandomhouse.com/cover/9780156012195",
+            },
+            {
+                title: "Matilda",
+                author: "Roald Dahl",
+                series: "None",
+                genre: "Children's",
+                image: "https://images.penguinrandomhouse.com/cover/9780142410370",
+            },
+            {
+                title: "The Great Gatsby",
+                author: "F. Scott Fitzgerald",
+                series: "None",
+                genre: "Classic",
+                image: "https://images.penguinrandomhouse.com/cover/9780743273565",
+            },
+            {
+                title: "1984",
+                author: "George Orwell",
+                series: "None",
+                genre: "Dystopian",
+                image: "https://images.penguinrandomhouse.com/cover/9780451524935",
+            },
+            {
+                title: "To Kill a Mockingbird",
+                author: "Harper Lee",
+                series: "None",
+                genre: "Classic",
+                image: "https://images.penguinrandomhouse.com/cover/9780061120084",
+            },
+            {
+                title: "The Fault in Our Stars",
+                author: "John Green",
+                series: "None",
+                genre: "Young Adult",
+                image: "https://images.penguinrandomhouse.com/cover/9780525478812",
+            },
+            {
+                title: "The Maze Runner",
+                author: "James Dashner",
+                series: "The Maze Runner",
+                genre: "Dystopian",
+                image: "https://images.penguinrandomhouse.com/cover/9780385737951",
+            },
+        ];
+
+        function displayBooks(filteredBooks) {
+            const bookList = document.getElementById("book-list");
+            bookList.innerHTML = "";
+            filteredBooks.forEach((book) => {
+                const bookItem = document.createElement("div");
+                bookItem.classList.add("book-item");
+                bookItem.innerHTML = `
+                    <img src="${book.image || 'https://via.placeholder.com/100x150'}" alt="${book.title}">
+                    <div class="details">
+                        <h3>${book.title}</h3>
+                        <p>Author: ${book.author}</p>
+                        <p>Series: ${book.series}</p>
+                        <p>Genre: ${book.genre}</p>
+                    </div>
+                `;
+                bookList.appendChild(bookItem);
+            });
+        }
+
+        function searchBooks() {
+            const searchInput = document.getElementById("search-bar").value.toLowerCase();
+            const filteredBooks = books.filter(book =>
+                book.title.toLowerCase().includes(searchInput)
+            );
+
+            // Check for the "rainbow" keyword
+            if (searchInput.includes("rainbow")) {
+                document.body.classList.add("rainbow-background");
+                document.getElementById("nyan-cat").style.display = "block";
+            } else {
+                document.body.classList.remove("rainbow-background");
+                document.getElementById("nyan-cat").style.display = "none";
+            }
+
+            displayBooks(filteredBooks);
+        }
+
+        function filterBooks() {
+            const authorFilter = document.getElementById("author").value.toLowerCase();
+            const seriesFilter = document.getElementById("series").value.toLowerCase();
+            const genreFilter = document.getElementById("genre").value.toLowerCase();
+
+            const filteredBooks = books.filter(book => {
+                return (
+                    (authorFilter === "" || book.author.toLowerCase().includes(authorFilter)) &&
+                    (seriesFilter === "" || book.series.toLowerCase().includes(seriesFilter)) &&
+                    (genreFilter === "" || book.genre.toLowerCase().includes(genreFilter))
+                );
+            });
+
+            displayBooks(filteredBooks);
+        }
+
+        function goToArticlePage() {
+            document.getElementById("book-app").style.display = "none";
+            document.getElementById("article-page").style.display = "block";
+        }
+
+        function goBack() {
+            document.getElementById("article-page").style.display = "none";
+            document.getElementById("book-app").style.display = "block";
+        }
+    </script>
+</body>
+</html>
