@@ -472,6 +472,8 @@
             document.getElementById("article-page").style.display = "none";
             document.getElementById("book-app").style.display = "block";
         }
-    </script>
-</body>
-</html>
+
+        // Display all books when the page loads
+        window.onload = function() {
+            displayBooks(books);
+       
